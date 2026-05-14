@@ -1,0 +1,22 @@
+LICENSING AGREEMENT
+
+This Licensing Agreement is entered into on 15 January 2026 by and between
+Acme Industries (the "Licensor") and Beta Holdings (the "Licensee").
+
+1. Subject Matter. The Licensor grants the Licensee a non-exclusive license
+   to use the proprietary software known as Helios v3 for internal business
+   purposes.
+
+2. Term. The term of this agreement begins on the effective date and runs
+   for thirty-six months unless terminated earlier under Section 5.
+
+3. Consideration. The Licensee shall pay the Licensor the sum of two
+   hundred and fifty thousand US dollars ($250,000), payable within thirty
+   days of execution.
+
+4. Confidentiality. Each party shall keep confidential any non-public
+   information disclosed by the other party in connection with this agreement.
+
+5. Termination. Either party may terminate this agreement upon sixty days
+   prior written notice for any reason. It should be noted that termination
+   does not relieve the Licensee of accrued payment obligations.

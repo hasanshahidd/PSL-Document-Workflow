@@ -1,0 +1,621 @@
+/* PSL Document Workflow — clean white + blue legal theme. */
+
+:root {
+  --bg: #ffffff;
+  --surface: #f7f9fc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --text: #0f172a;
+  --text-dim: #64748b;
+  --text-mute: #94a3b8;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-soft: #eff4ff;
+  --ok: #16a34a;
+  --ok-soft: #ecfdf5;
+  --warn: #d97706;
+  --warn-soft: #fffbeb;
+  --err: #dc2626;
+  --err-soft: #fef2f2;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 6px rgba(15, 23, 42, 0.05), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --rad: 8px;
+  --rad-sm: 6px;
+  font-family: -apple-system, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- top bar ---------------------------------------------------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.brand { display: flex; gap: 12px; align-items: center; }
+
+.logo {
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: var(--rad-sm);
+  background: var(--primary);
+  color: #ffffff;
+  letter-spacing: 0.4px;
+  font-size: 13px;
+}
+
+.title { font-weight: 600; font-size: 16px; color: var(--text); }
+
+.tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  border: 1px solid #dbe6fb;
+}
+
+.tag.demo {
+  background: var(--warn-soft);
+  color: var(--warn);
+  border-color: #fde4b3;
+}
+
+.meters { display: flex; gap: 24px; }
+.meter { display: flex; flex-direction: column; align-items: flex-end; font-variant-numeric: tabular-nums; }
+.meter-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-mute);
+  font-weight: 600;
+}
+.meter-value { font-weight: 600; font-size: 14px; color: var(--text); }
+
+/* ---------- layout ----------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(440px, 1.4fr) minmax(340px, 1fr);
+  gap: 20px;
+  padding: 20px 24px;
+  background: var(--surface);
+  min-height: calc(100vh - 110px);
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  padding: 20px;
+  min-height: 70vh;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.panel h2 {
+  margin: 0 0 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-mute);
+  font-weight: 600;
+}
+
+.panel h3.sub {
+  margin: 24px 0 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-mute);
+  font-weight: 600;
+}
+
+/* ---------- uploader --------------------------------------------------- */
+.uploader { margin-bottom: 8px; }
+.uploader.two-step {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+/* A regular button that opens the hidden file input via JS on click. */
+button.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary);
+  border-radius: var(--rad-sm);
+  font-weight: 600;
+  padding: 10px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, border-color 0.15s;
+  min-width: 0;
+  overflow: hidden;
+}
+button.upload-btn:hover:not(:disabled) {
+  background: var(--primary-soft);
+  border-color: var(--primary-dark);
+}
+button.upload-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+button.upload-btn .picked-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+button.ingest-btn {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  font-weight: 600;
+  padding: 10px 18px;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+button.ingest-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #ffffff;
+}
+
+.hint { font-size: 11px; color: var(--text-dim); margin: 8px 0 16px; }
+
+/* ---------- buttons ---------------------------------------------------- */
+button {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--rad-sm);
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+button:hover:not(:disabled) {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+button.primary {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  font-weight: 600;
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 14px;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+button.primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #ffffff;
+}
+
+button.primary-outline {
+  background: var(--card);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary);
+  font-weight: 600;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+button.primary-outline:hover:not(:disabled) {
+  background: var(--primary-soft);
+  border-color: var(--primary-dark);
+  color: var(--primary-dark);
+}
+
+button.link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+button.link:hover { text-decoration: underline; }
+
+/* ---------- doc list --------------------------------------------------- */
+.doc-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.doc-list li {
+  padding: 12px 36px 12px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--rad-sm);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+}
+
+.doc-list li:hover { border-color: var(--primary); background: var(--primary-soft); }
+.doc-list li.selected {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+button.doc-del {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-mute);
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+button.doc-del:hover {
+  color: var(--err);
+  background: var(--err-soft);
+  border-color: #fbcccc;
+}
+
+.doc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.doc-name { font-weight: 600; font-size: 13px; color: var(--text); }
+
+.doc-conf {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid;
+}
+
+.doc-conf.high { background: var(--ok-soft); color: var(--ok); border-color: #b7ebcb; }
+.doc-conf.mid { background: var(--warn-soft); color: var(--warn); border-color: #fde4b3; }
+.doc-conf.low { background: var(--err-soft); color: var(--err); border-color: #fbcccc; }
+
+.doc-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.doc-meta .dim {
+  color: var(--text-mute);
+  font-family: ui-monospace, "Cascadia Mono", Menlo, monospace;
+}
+
+.empty {
+  color: var(--text-dim);
+  font-style: italic;
+  text-align: center;
+  padding: 32px 0;
+  font-size: 12px;
+}
+
+/* ---------- draft + citations ----------------------------------------- */
+.draft-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.badge.ok { background: var(--ok-soft); color: var(--ok); border-color: #b7ebcb; }
+.badge.dim { color: var(--text-mute); font-family: ui-monospace, monospace; font-size: 10px; }
+
+.draft {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  padding: 22px 24px;
+  max-height: 55vh;
+  overflow-y: auto;
+  line-height: 1.65;
+}
+
+.sent {
+  padding: 4px 6px;
+  margin: 2px -6px;
+  border-radius: var(--rad-sm);
+  cursor: default;
+  transition: background 0.1s;
+}
+
+.sent:hover { background: var(--primary-soft); }
+
+.sent.heading {
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-top: 18px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+
+.sent.unsupported {
+  background: var(--err-soft);
+  border-left: 3px solid var(--err);
+  padding-left: 10px;
+}
+
+.warn {
+  display: inline-block;
+  font-size: 10px;
+  color: var(--err);
+  text-transform: uppercase;
+  margin-left: 8px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* numbered citation chip rendered by app.js */
+.cite {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+  border: 1px solid #dbe6fb;
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin: 0 2px;
+  vertical-align: super;
+  line-height: 1.2;
+  cursor: help;
+  user-select: none;
+}
+
+/* ---------- citation popover ------------------------------------------ */
+.cite-pop {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: var(--card);
+  border: 1px solid var(--primary);
+  border-radius: var(--rad);
+  padding: 14px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+  z-index: 10;
+}
+
+.cite-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  font-family: ui-monospace, monospace;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cite-head .conf {
+  color: var(--ok);
+  font-weight: 700;
+}
+.cite-quote {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+  border-left: 3px solid var(--primary);
+  padding: 8px 10px;
+  margin: 0 0 8px 0;
+  border-radius: 4px;
+  line-height: 1.55;
+}
+.cite-body { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+
+/* ---------- editor ---------------------------------------------------- */
+.editor { margin-top: 20px; }
+.editor summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 8px 0;
+  list-style: none;
+}
+.editor summary::-webkit-details-marker { display: none; }
+.editor summary::before { content: "▸ "; margin-right: 4px; }
+.editor[open] summary::before { content: "▾ "; }
+
+.editor textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--rad-sm);
+  padding: 10px;
+  font-family: ui-monospace, "Cascadia Mono", monospace;
+  font-size: 12px;
+  margin: 10px 0;
+  resize: vertical;
+  line-height: 1.45;
+}
+.editor textarea:focus { outline: 2px solid var(--primary); outline-offset: -1px; border-color: var(--primary); }
+
+.edit-result {
+  background: var(--ok-soft);
+  border: 1px solid #b7ebcb;
+  border-radius: var(--rad-sm);
+  padding: 12px;
+  font-size: 12px;
+  margin-top: 12px;
+  color: var(--text);
+}
+.edit-result strong { color: var(--ok); }
+
+.diff-pills {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid;
+}
+.pill.kept { background: #ffffff; color: var(--text-dim); border-color: var(--border); }
+.pill.changed { background: var(--warn-soft); color: var(--warn); border-color: #fde4b3; }
+.pill.added { background: var(--ok-soft); color: var(--ok); border-color: #b7ebcb; }
+.pill.removed { background: var(--err-soft); color: var(--err); border-color: #fbcccc; }
+
+/* ---------- trace gantt ----------------------------------------------- */
+.trace-meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.gantt {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  padding: 12px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.row {
+  display: flex;
+  margin: 3px 0;
+  min-height: 22px;
+  align-items: center;
+}
+
+.bar {
+  background: var(--primary);
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: #ffffff;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 56px;
+  letter-spacing: 0.01em;
+  align-items: center;
+}
+
+.bar.error { background: var(--err); color: #ffffff; }
+.bar .ms { font-weight: 400; opacity: 0.9; margin-left: 12px; font-variant-numeric: tabular-nums; }
+
+/* ---------- learned rules --------------------------------------------- */
+.rules { list-style: none; margin: 0; padding: 0; }
+
+.rules li {
+  padding: 10px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--rad-sm);
+  margin-bottom: 6px;
+  font-size: 12px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.cat {
+  font-size: 9px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid #dbe6fb;
+}
+
+.rule { color: var(--text); line-height: 1.4; }
+.support {
+  color: var(--ok);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--ok-soft);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid #b7ebcb;
+}
+
+/* ---------- footer ---------------------------------------------------- */
+.footer {
+  text-align: center;
+  padding: 12px;
+  font-size: 11px;
+  color: var(--text-mute);
+  border-top: 1px solid var(--border);
+  font-family: ui-monospace, "Cascadia Mono", monospace;
+  background: var(--bg);
+}

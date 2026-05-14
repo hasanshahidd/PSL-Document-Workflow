@@ -1,0 +1,53 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+
+# user-uploaded files and the runtime data dir
+data/raw/
+data/processed/
+data/chroma/
+data/samples/
+
+# SQLite app db plus WAL/SHM files
+*.db
+*.db-wal
+*.db-shm
+
+# OCR helper files generated at runtime
+data/user_words.txt
+data/user_patterns.txt
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# pytest, coverage, hf model cache
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+
+# generated draft + eval scratch files
+draft_response.json
+cis_draft.json
+cis_draft2.json
+cis_draft3.json
+cis_v2.json
+legal_v3.json
+draft_v2.json
+cis_draft*.json
+
+# playwright artefacts
+.playwright-mcp/

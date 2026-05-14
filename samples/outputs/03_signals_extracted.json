@@ -1,0 +1,43 @@
+{
+  "diff_summary": {
+    "kept": 7,
+    "changed": 4,
+    "added": 1,
+    "removed": 0
+  },
+  "signals": [
+    {
+      "op": "changed",
+      "original": "A subsequent notice was transmitted by counsel for Acme Industries to Beta Holdings' Legal Department [demo_notice_of_dispute:p1:c0].",
+      "edited": "Counsel for Acme Industries sent a notice to Beta Holdings' Legal Department [demo_notice_of_dispute:p1:c0].",
+      "category": "phrasing_swap",
+      "rule": "Prefer active voice over passive; use 'sent' instead of 'transmitted'.",
+      "reason": "rewrote passive to active and replaced legalese verb"
+    },
+    {
+      "op": "changed",
+      "original": "It should be noted that the Licensee is alleged to have failed to remit the payment of $250,000 due under Section 3 of the agreement [demo_notice_of_dispute:p1:c0].",
+      "edited": "The Licensee is alleged to have failed to pay the $250,000 due under Section 3 of the agreement [demo_notice_of_dispute:p1:c0].",
+      "category": "boilerplate_stripped",
+      "rule": "Strip 'It should be noted that' and similar boilerplate prefixes.",
+      "reason": "removed throat-clearing phrase and replaced 'remit' with 'pay'"
+    },
+    {
+      "op": "changed",
+      "original": "As stated above, the payment remains outstanding ninety-one days after the deadline [demo_notice_of_dispute:p1:c0].",
+      "edited": "The payment remains outstanding ninety-one days after the deadline [demo_notice_of_dispute:p1:c0].",
+      "category": "boilerplate_stripped",
+      "rule": "Strip 'As stated above' and similar back-references.",
+      "reason": "removed referential boilerplate"
+    },
+    {
+      "op": "added",
+      "original": null,
+      "edited": "Bottom line: a software licensing deal between Acme and Beta, now disputed over a missed payment.",
+      "category": "section_added",
+      "rule": "Add a one-sentence 'Bottom line' under Subject Matter.",
+      "reason": "added plain-English summary line"
+    }
+  ],
+  "rules_updated": 4
+}

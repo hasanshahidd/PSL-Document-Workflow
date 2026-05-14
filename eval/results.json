@@ -1,0 +1,46 @@
+{
+  "doc_ids": [
+    "demo_licensing_agreement",
+    "demo_notice_of_dispute"
+  ],
+  "grounding": {
+    "n_cited": 8,
+    "n_supported": 8,
+    "grounding_score": 1.0
+  },
+  "retrieval": null,
+  "edit_loop": {
+    "rounds": [
+      {
+        "round": 1,
+        "draft_id": "2c8b3ae6-1f42-4dfd-8b70-8dc802ba2696",
+        "edit_distance": 0.4074,
+        "n_sentences": 13,
+        "grounding_rate": 0.7692
+      },
+      {
+        "round": 2,
+        "draft_id": "24b698e8-12d6-49fd-a350-75963ef97e9a",
+        "edit_distance": 0.2857,
+        "n_sentences": 14,
+        "grounding_rate": 0.9286
+      }
+    ],
+    "first_distance": 0.4074,
+    "last_distance": 0.2857,
+    "improvement": 0.1217,
+    "improved": true
+  },
+  "hallucination": {
+    "grounded": {
+      "n_sentences": 14,
+      "n_unsupported": 0,
+      "grounding_rate": 1.0
+    },
+    "baseline": {
+      "n_sentences": 21,
+      "n_unsupported": 15,
+      "grounding_rate": 0.2857
+    }
+  }
+}

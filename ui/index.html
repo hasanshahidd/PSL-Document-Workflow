@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PSL Document Workflow</title>
+  <link rel="stylesheet" href="/ui/styles.css?v=20260514a">
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body x-data="app()" x-init="boot()">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">PSL</span>
+      <span class="title">Document Workflow</span>
+      <span class="tag demo" x-show="demoMode">DEMO MODE</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <!-- ===== Documents column ===== -->
+    <section class="panel">
+      <h2>1. Documents</h2>
+
+      <div class="uploader two-step">
+        <button type="button"
+                class="upload-btn"
+                :disabled="busy.upload"
+                @click="openFilePicker()">
+          <span x-show="!pickedFile">Choose file...</span>
+          <span x-show="pickedFile" class="picked-name" x-text="pickedFile ? pickedFile.name : ''"></span>
+        </button>
+        <input type="file"
+               x-ref="file"
+               accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.txt"
+               style="position:absolute;left:-9999px;width:1px;height:1px;"
+               @change="onFilePicked()">
+        <button type="button"
+                class="ingest-btn"
+                :disabled="!pickedFile || busy.upload"
+                @click="ingestPicked()">
+          <span x-show="!busy.upload">Ingest</span>
+          <span x-show="busy.upload">Working...</span>
+        </button>
+      </div>
+
+      <p class="hint">Two steps. Pick a file, then click Ingest. OCR, vision fallback, and structured field extraction run server side.</p>
+
+      <ul class="doc-list">
+        <template x-for="d in documents" :key="d.doc_id">
+          <li :class="{selected: selected.has(d.doc_id)}" @click="toggleSelect(d.doc_id)">
+            <button class="doc-del"
+                    title="Remove this document"
+                    @click.stop="deleteDoc(d)">&times;</button>
+            <div class="doc-head">
+              <span class="doc-name" x-text="d.filename"></span>
+              <span class="doc-conf" :class="confClass(d.mean_confidence)" x-text="(d.mean_confidence*100).toFixed(0)+'%'"></span>
+            </div>
+            <div class="doc-meta">
+              <span x-text="d.pages+' pg'"></span>
+              <span x-text="d.doc_type || 'unknown'"></span>
+              <span class="dim" x-text="d.doc_id.slice(0,12)"></span>
+            </div>
+          </li>
+        </template>
+        <li x-show="documents.length===0" class="empty">No documents yet. Ingest one to start.</li>
+      </ul>
+
+      <button class="primary" :disabled="selected.size===0 || busy.draft" @click="generateDraft()">
+        <span x-show="!busy.draft">Generate Draft (<span x-text="selected.size"></span> docs)</span>
+        <span x-show="busy.draft">Generating…</span>
+      </button>
+    </section>
+
+    <!-- ===== Draft column ===== -->
+    <section class="panel">
+      <h2>2. Grounded Draft</h2>
+      <template x-if="draft">
+        <div>
+          <div class="draft-meta">
+            <span class="badge ok" x-text="'Grounding '+ Math.round((draft.grounding_rate||0)*100)+'%'"></span>
+            <span class="badge" x-text="(draft.sentences||[]).length+' sentences'"></span>
+            <span class="badge dim" x-text="(draft.draft_id||'').slice(0,8)"></span>
+            <button class="link" @click="loadTrace(draft.draft_id)">View trace →</button>
+          </div>
+
+          <div class="draft">
+            <template x-for="(s, i) in draft.sentences" :key="i">
+              <div class="sent" :class="sentClass(s)" @mouseover="hoverCite(s)" @mouseleave="hoverChunk=null">
+                <span x-html="formatSentence(s)"></span>
+                <span x-show="!s.supported && !s.text.startsWith('#')" class="warn">unsupported</span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+      <div class="empty" x-show="!draft">Select documents on the left and generate a draft.</div>
+
+      <template x-if="hoverChunk">
+        <div class="cite-pop">
+          <div class="cite-head">
+            <span x-text="hoverChunk.doc_id+' · p'+hoverChunk.page"></span>
+            <span class="conf" x-text="'ocr '+Math.round(hoverChunk.ocr_confidence*100)+'%'"></span>
+          </div>
+          <template x-if="hoverChunk.quote">
+            <div class="cite-quote" x-text="'“' + hoverChunk.quote + '”'"></div>
+          </template>
+          <div class="cite-body" x-text="hoverChunk.text"></div>
+        </div>
+      </template>
+
+      <template x-if="draft">
+        <details class="editor">
+          <summary>Submit operator edit →</summary>
+          <textarea x-model="editText" rows="10" placeholder="Paste your edited draft here..."></textarea>
+          <button @click="submitEdit()" :disabled="busy.edit || !editText.trim()">
+            <span x-show="!busy.edit">Capture edit</span>
+            <span x-show="busy.edit">Learning…</span>
+          </button>
+          <template x-if="lastEdit">
+            <div class="edit-result">
+              <div>
+                <strong x-text="lastEdit.signals_recorded"></strong> signal<span x-show="lastEdit.signals_recorded !== 1">s</span> recorded ·
+                <strong x-text="lastEdit.rules_updated"></strong> rule<span x-show="lastEdit.rules_updated !== 1">s</span> updated
+              </div>
+              <div class="diff-pills">
+                <span class="pill kept" x-text="(lastEdit.diff_summary.kept||0)+' kept'"></span>
+                <span class="pill changed" x-text="(lastEdit.diff_summary.changed||0)+' changed'" x-show="lastEdit.diff_summary.changed"></span>
+                <span class="pill added" x-text="(lastEdit.diff_summary.added||0)+' added'" x-show="lastEdit.diff_summary.added"></span>
+                <span class="pill removed" x-text="(lastEdit.diff_summary.removed||0)+' removed'" x-show="lastEdit.diff_summary.removed"></span>
+              </div>
+            </div>
+          </template>
+        </details>
+      </template>
+    </section>
+
+    <!-- ===== Inspector column ===== -->
+    <section class="panel">
+      <h2>3. Trace Inspector</h2>
+      <template x-if="trace">
+        <div class="trace">
+          <div class="trace-meta">
+            <span class="badge" x-text="(trace.spans||[]).length+' spans'"></span>
+            <span class="badge" x-text="totalMs()+' ms'"></span>
+            <span class="badge dim" x-text="(trace.trace_id||'').slice(0,12)"></span>
+          </div>
+          <div class="gantt">
+            <template x-for="s in (trace.spans||[])" :key="s.span_id">
+              <div class="row" :style="rowStyle(s)">
+                <div class="bar" :class="s.status"
+                     :style="barStyle(s)"
+                     :title="s.name+' — '+s.duration_ms.toFixed(1)+' ms'">
+                  <span x-text="s.name"></span>
+                  <span class="ms" x-text="s.duration_ms.toFixed(1)+'ms'"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+      <div class="empty" x-show="!trace">Generate a draft to see its trace.</div>
+
+      <h3 class="sub">Learned style rules</h3>
+      <ul class="rules">
+        <template x-for="r in rules" :key="r.rule">
+          <li>
+            <span class="cat" x-text="r.category"></span>
+            <span class="rule" x-text="r.rule"></span>
+            <span class="support" x-text="'×'+r.support"></span>
+          </li>
+        </template>
+        <li x-show="rules.length===0" class="empty">No rules learned yet. Submit an edit to teach the system.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span x-text="'drafts '+(stats.counts.drafts||0)+' · edits '+(stats.counts.edits||0)+' · rules '+(stats.counts.style_rules||0)+' · traces '+(stats.counts.traces||0)"></span>
+  </footer>
+
+  <script src="/ui/app.js?v=20260514a"></script>
+</body>
+</html>

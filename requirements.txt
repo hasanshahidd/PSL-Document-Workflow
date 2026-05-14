@@ -1,0 +1,17 @@
+pymupdf==1.24.10
+pytesseract==0.3.13
+Pillow==10.4.0
+opencv-python-headless==4.10.0.84
+numpy==1.26.4
+scikit-image==0.24.0
+sentence-transformers==3.1.1
+chromadb==0.5.15
+anthropic==0.39.0
+openai==1.51.0
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-dotenv==1.0.1
+fastapi==0.115.0
+uvicorn==0.31.0
+python-multipart==0.0.12
+pytest==8.3.3

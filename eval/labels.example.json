@@ -1,0 +1,17 @@
+[
+  {
+    "query": "Who are the parties to the agreement?",
+    "relevant_chunk_ids": ["REPLACE_WITH_REAL_CHUNK_ID_1", "REPLACE_WITH_REAL_CHUNK_ID_2"],
+    "doc_ids": null
+  },
+  {
+    "query": "What is the effective date of the contract?",
+    "relevant_chunk_ids": ["REPLACE_WITH_REAL_CHUNK_ID_3"],
+    "doc_ids": null
+  },
+  {
+    "query": "What payment terms are specified?",
+    "relevant_chunk_ids": ["REPLACE_WITH_REAL_CHUNK_ID_4"],
+    "doc_ids": null
+  }
+]
